@@ -29,7 +29,7 @@ EventMachine.run do
       @clients.each do |socket|
         msg = begin
                 eval(msg).to_s
-              rescue => e
+              rescue Exception => e
                 e.message
               end
         socket.send msg
