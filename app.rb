@@ -3,6 +3,8 @@ require 'thin'
 require 'sinatra/base'
 require 'em-websocket'
 require 'pry'
+require_relative './lib/output_catcher.rb'
+include OutputCatcher
 
 EventMachine.run do
   class App < Sinatra::Base
@@ -28,7 +30,9 @@ EventMachine.run do
     ws.onmessage do |msg|
       @clients.each do |socket|
         msg = begin
-                eval(msg).to_s
+                catch_output do
+                  eval(msg).to_s
+                end
               rescue Exception => e
                 e.message
               end
